@@ -1,5 +1,6 @@
 package dev.vitorj.login.config.security;
 
+import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -10,27 +11,28 @@ import dev.vitorj.login.modelo.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class TokenService {
 	
-	@Value("${forum.jwt.expiration}")
+	@Value("${jwt.expiration}")
 	private String expiration;
-	
-	@Value("${forum.jwt.secret}")
-	private String secret;
+
+	private Key secret = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
 	public String gerarToken(Authentication authentication) {
 		Usuario logado = (Usuario) authentication.getPrincipal();
 		Date hoje = new Date();
-		Date dataExpiracao = new Date(hoje.getTime() + Long.parseLong(expiration));
+		Date dataExpiracao = 
+			new Date(hoje.getTime() + Long.parseLong(expiration));
 		
 		return Jwts.builder()
 				.setIssuer("API")
 				.setSubject(logado.getId().toString())
 				.setIssuedAt(hoje)
 				.setExpiration(dataExpiracao)
-				.signWith(SignatureAlgorithm.HS256, secret)
+				.signWith(this.secret, SignatureAlgorithm.PS512)
 				.compact();
 	}
 	
@@ -44,7 +46,8 @@ public class TokenService {
 	}
 
 	public Long getIdUsuario(String token) {
-		Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
+		Claims claims = Jwts.parser().setSigningKey(this.secret)
+			.parseClaimsJws(token).getBody();
 		return Long.parseLong(claims.getSubject());
 	}
 
