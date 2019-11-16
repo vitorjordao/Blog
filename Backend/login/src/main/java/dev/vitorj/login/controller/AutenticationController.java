@@ -19,7 +19,7 @@ import dev.vitorj.login.controller.form.LoginForm;
 
 @RestController
 @RequestMapping("/auth")
-public class AutenticacaoController {
+public class AutenticationController {
 	
 	@Autowired
 	private AuthenticationManager authManager;
@@ -29,11 +29,11 @@ public class AutenticacaoController {
 
 	@PostMapping
 	public ResponseEntity<TokenDto> autenticar(@RequestBody @Valid LoginForm form) {
-		UsernamePasswordAuthenticationToken dadosLogin = form.converter();
+		UsernamePasswordAuthenticationToken dataLogin = form.convert();
 		
 		try {
-			Authentication authentication = authManager.authenticate(dadosLogin);
-			String token = tokenService.gerarToken(authentication);
+			Authentication authentication = authManager.authenticate(dataLogin);
+			String token = tokenService.generateToken(authentication);
 			return ResponseEntity.ok(new TokenDto(token, "Bearer"));
 		} catch (AuthenticationException e) {
 			return ResponseEntity.badRequest().build();

@@ -11,15 +11,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import dev.vitorj.login.modelo.Usuario;
-import dev.vitorj.login.repository.UsuarioRepository;
+import dev.vitorj.login.modelo.User;
+import dev.vitorj.login.repository.UserRepository;
 
-public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
+public class AutenticationTokenFilter extends OncePerRequestFilter {
 	
 	private TokenService tokenService;
-	private UsuarioRepository repository;
+	private UserRepository repository;
 
-	public AutenticacaoViaTokenFilter(TokenService tokenService, UsuarioRepository repository) {
+	public AutenticationTokenFilter(TokenService tokenService, UserRepository repository) {
 		this.tokenService = tokenService;
 		this.repository = repository;
 	}
@@ -28,23 +28,23 @@ public class AutenticacaoViaTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
-		String token = recuperarToken(request);
-		boolean valido = tokenService.isTokenValido(token);
-		if (valido) {
-			autenticarCliente(token);
+		String token = recovertoken(request);
+		boolean valid = tokenService.isValidToken(token);
+		if (valid) {
+			authenticateClient(token);
 		}
 		
 		filterChain.doFilter(request, response);
 	}
 
-	private void autenticarCliente(String token) {
-		Long idUsuario = tokenService.getIdUsuario(token);
-		Usuario usuario = repository.findById(idUsuario).get();
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+	private void authenticateClient(String token) {
+		Long idUser = tokenService.getIdUser(token);
+		User user = repository.findById(idUser).get();
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
-	private String recuperarToken(HttpServletRequest request) {
+	private String recovertoken(HttpServletRequest request) {
 		String token = request.getHeader("Authorization");
 		if (token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
 			return null;

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import dev.vitorj.login.modelo.Usuario;
+import dev.vitorj.login.modelo.User;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -23,7 +23,7 @@ public class SwaggerConfigurations {
 				.apis(RequestHandlerSelectors.basePackage("dev.vitorj.login"))
 				.paths(PathSelectors.ant("/**"))
 				.build()
-				.ignoredParameterTypes(Usuario.class)
+				.ignoredParameterTypes(User.class)
 				.globalOperationParameters(Arrays.asList(
 						new ParameterBuilder()
 						.name("Authorization")

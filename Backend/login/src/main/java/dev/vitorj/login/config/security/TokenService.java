@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import dev.vitorj.login.modelo.Usuario;
+import dev.vitorj.login.modelo.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,22 +21,22 @@ public class TokenService {
 
 	private Key secret = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-	public String gerarToken(Authentication authentication) {
-		Usuario logado = (Usuario) authentication.getPrincipal();
-		Date hoje = new Date();
-		Date dataExpiracao = 
-			new Date(hoje.getTime() + Long.parseLong(expiration));
+	public String generateToken(Authentication authentication) {
+		User login = (User) authentication.getPrincipal();
+		Date today = new Date();
+		Date expirationDate = 
+			new Date(today.getTime() + Long.parseLong(expiration));
 		
 		return Jwts.builder()
 				.setIssuer("API")
-				.setSubject(logado.getId().toString())
-				.setIssuedAt(hoje)
-				.setExpiration(dataExpiracao)
+				.setSubject(login.getId().toString())
+				.setIssuedAt(today)
+				.setExpiration(expirationDate)
 				.signWith(this.secret, SignatureAlgorithm.PS512)
 				.compact();
 	}
 	
-	public boolean isTokenValido(String token) {
+	public boolean isValidToken(String token) {
 		try {
 			Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
 			return true;
@@ -45,7 +45,7 @@ public class TokenService {
 		}
 	}
 
-	public Long getIdUsuario(String token) {
+	public Long getIdUser(String token) {
 		Claims claims = Jwts.parser().setSigningKey(this.secret)
 			.parseClaimsJws(token).getBody();
 		return Long.parseLong(claims.getSubject());

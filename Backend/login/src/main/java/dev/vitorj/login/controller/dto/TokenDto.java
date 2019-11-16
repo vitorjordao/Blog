@@ -3,19 +3,19 @@ package dev.vitorj.login.controller.dto;
 public class TokenDto {
 
 	private String token;
-	private String tipo;
+	private String type;
 
-	public TokenDto(String token, String tipo) {
+	public TokenDto(String token, String type) {
 		this.token = token;
-		this.tipo = tipo;
+		this.type = type;
 	}
 
 	public String getToken() {
 		return token;
 	}
 
-	public String getTipo() {
-		return tipo;
+	public String getType() {
+		return type;
 	}
 
 }

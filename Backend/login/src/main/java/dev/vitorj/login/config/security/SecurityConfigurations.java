@@ -14,20 +14,20 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import dev.vitorj.login.repository.UsuarioRepository;
+import dev.vitorj.login.repository.UserRepository;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private AutenticacaoService autenticacaoService;
+	private AutenticationService autenticationService;
 	
 	@Autowired
 	private TokenService tokenService;
 	
 	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private UserRepository repository;
 	
 	@Override
 	@Bean
@@ -38,7 +38,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	//Configuracoes de autenticacao
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
+		auth.userDetailsService(autenticationService).passwordEncoder(new BCryptPasswordEncoder());
 	}
 	
 	//Configuracoes de autorizacao
@@ -52,7 +52,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		.anyRequest().authenticated()
 		.and().csrf().disable()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
+		.and().addFilterBefore(new AutenticationTokenFilter(tokenService, repository), UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	//Configuracoes de recursos estaticos(js, css, imagens, etc.)
