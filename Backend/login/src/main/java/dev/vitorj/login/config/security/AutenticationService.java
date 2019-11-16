@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import dev.vitorj.login.modelo.User;
+import dev.vitorj.login.model.User;
 import dev.vitorj.login.repository.UserRepository;
 
 @Service

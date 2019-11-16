@@ -1,4 +1,4 @@
-package dev.vitorj.login.config.validacao;
+package dev.vitorj.login.config.validation;
 
 import java.util.ArrayList;
 import java.util.List;

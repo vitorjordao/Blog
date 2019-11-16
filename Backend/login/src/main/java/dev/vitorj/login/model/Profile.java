@@ -1,4 +1,4 @@
-package dev.vitorj.login.modelo;
+package dev.vitorj.login.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

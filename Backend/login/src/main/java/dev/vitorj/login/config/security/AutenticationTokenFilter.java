@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import dev.vitorj.login.modelo.User;
+import dev.vitorj.login.model.User;
 import dev.vitorj.login.repository.UserRepository;
 
 public class AutenticationTokenFilter extends OncePerRequestFilter {
